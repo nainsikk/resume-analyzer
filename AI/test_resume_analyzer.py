@@ -348,4 +348,11 @@ def test_final_score_with_zero_skill_score():
 
     assert score == 34.0
 
+# 14. Final score with zero semantic similarity
+
+def test_final_score_with_zero_semantic_similarity():
+    score = calculate_final_score(80, 0, 100)
+
+    assert score == 58.0
+
 
