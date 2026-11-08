@@ -329,6 +329,12 @@ def test_final_score_with_only_skill_score():
     score = calculate_final_score(80, None, None)
 
     assert score == 80.0
+# 11. Final score with only semantic similarity
+
+def test_final_score_with_only_semantic_similarity():
+    score = calculate_final_score(None, 75, None)
+
+    assert score == 75.0
 
 
 
