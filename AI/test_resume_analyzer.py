@@ -341,6 +341,11 @@ def test_final_score_with_only_experience():
     score = calculate_final_score(None, None, 60)
 
     assert score == 60.0
+# 13. Final score with zero skill score
 
+def test_final_score_with_zero_skill_score():
+    score = calculate_final_score(0, 80, 100)
+
+    assert score == 34.0
 
 
