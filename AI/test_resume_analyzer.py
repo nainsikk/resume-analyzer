@@ -293,6 +293,12 @@ def test_final_score_never_exceeds_100():
     assert score == 100.0
 
 
+def test_final_score_never_goes_below_0():
+    score = calculate_final_score(-20, -10, -5)
+
+    assert score == 0.0
+
+
 # 8. Negative experience validation test
 
 def test_both_experience_values_negative():
@@ -309,3 +315,4 @@ def test_fractional_experience_scoring():
     score = calculate_experience_score(0.5, 2)
 
     assert score == 25.0
+
