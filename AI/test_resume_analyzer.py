@@ -323,3 +323,12 @@ def test_fractional_experience_scoring():
     assert score == 25.0
 
 
+# 10. Final score with only skill score available
+
+def test_final_score_with_only_skill_score():
+    score = calculate_final_score(80, None, None)
+
+    assert score == 80.0
+
+
+
