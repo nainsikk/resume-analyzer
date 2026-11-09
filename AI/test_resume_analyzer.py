@@ -390,4 +390,10 @@ def test_final_score_caps_experience_at_100():
 
     assert score == 82.0
 
+# 20. Final score with all maximum component values
+
+def test_final_score_with_all_maximum_values():
+    score = calculate_final_score(100, 100, 100)
+
+    assert score == 100.0
 
