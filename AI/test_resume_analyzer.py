@@ -397,3 +397,12 @@ def test_final_score_with_all_maximum_values():
 
     assert score == 100.0
 
+# 21. Final score with all minimum values
+
+# 21. Final score with minimum skill and maximum other components
+
+def test_final_score_with_minimum_skill_and_maximum_other_components():
+    score = calculate_final_score(0, 100, 100)
+
+    assert score == 40.0
+
