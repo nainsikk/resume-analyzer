@@ -383,4 +383,11 @@ def test_final_score_caps_skill_score_at_100():
 
     assert score == 94.0
 
+# 19. Final score caps experience score at 100
+
+def test_final_score_caps_experience_at_100():
+    score = calculate_final_score(80, 80, 120)
+
+    assert score == 82.0
+
 
