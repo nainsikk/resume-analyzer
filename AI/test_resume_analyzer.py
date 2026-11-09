@@ -376,4 +376,11 @@ def test_final_score_caps_semantic_similarity_at_100():
 
     assert score == 88.0
 
+# 18. Final score caps skill score at 100
+
+def test_final_score_caps_skill_score_at_100():
+    score = calculate_final_score(120, 80, 100)
+
+    assert score == 94.0
+
 
