@@ -369,4 +369,11 @@ def test_final_score_without_semantic_similarity():
 
     assert score == 82.86
 
+# 17. Final score caps semantic similarity at 100
+
+def test_final_score_caps_semantic_similarity_at_100():
+    score = calculate_final_score(80, 120, 100)
+
+    assert score == 88.0
+
 
