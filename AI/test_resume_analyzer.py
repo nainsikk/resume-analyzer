@@ -362,4 +362,11 @@ def test_final_score_with_zero_experience_score():
 
     assert score == 69.0
 
+# 16. Final score without semantic similarity
+
+def test_final_score_without_semantic_similarity():
+    score = calculate_final_score(80, None, 100)
+
+    assert score == 82.86
+
 
