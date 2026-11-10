@@ -329,24 +329,31 @@ def test_final_score_with_only_skill_score():
     score = calculate_final_score(80, None, None)
 
     assert score == 80.0
+
+
 # 11. Final score with only semantic similarity
 
 def test_final_score_with_only_semantic_similarity():
     score = calculate_final_score(None, 75, None)
 
     assert score == 75.0
+
+
 # 12. Final score with only experience score
 
 def test_final_score_with_only_experience():
     score = calculate_final_score(None, None, 60)
 
     assert score == 60.0
+
+
 # 13. Final score with zero skill score
 
 def test_final_score_with_zero_skill_score():
     score = calculate_final_score(0, 80, 100)
 
     assert score == 34.0
+
 
 # 14. Final score with zero semantic similarity
 
@@ -355,12 +362,14 @@ def test_final_score_with_zero_semantic_similarity():
 
     assert score == 58.0
 
+
 # 15. Final score with zero experience score
 
 def test_final_score_with_zero_experience_score():
     score = calculate_final_score(80, 70, 0)
 
     assert score == 69.0
+
 
 # 16. Final score without semantic similarity
 
@@ -369,12 +378,14 @@ def test_final_score_without_semantic_similarity():
 
     assert score == 82.86
 
+
 # 17. Final score caps semantic similarity at 100
 
 def test_final_score_caps_semantic_similarity_at_100():
     score = calculate_final_score(80, 120, 100)
 
     assert score == 88.0
+
 
 # 18. Final score caps skill score at 100
 
@@ -383,12 +394,14 @@ def test_final_score_caps_skill_score_at_100():
 
     assert score == 94.0
 
+
 # 19. Final score caps experience score at 100
 
 def test_final_score_caps_experience_at_100():
     score = calculate_final_score(80, 80, 120)
 
     assert score == 82.0
+
 
 # 20. Final score with all maximum component values
 
@@ -397,7 +410,6 @@ def test_final_score_with_all_maximum_values():
 
     assert score == 100.0
 
-# 21. Final score with all minimum values
 
 # 21. Final score with minimum skill and maximum other components
 
@@ -406,12 +418,14 @@ def test_final_score_with_minimum_skill_and_maximum_other_components():
 
     assert score == 40.0
 
+
 # 22. Final score with minimum semantic similarity
 
 def test_final_score_with_minimum_semantic_similarity():
     score = calculate_final_score(100, 0, 100)
 
     assert score == 70.0
+
 
 # 23. Final score with minimum experience
 
@@ -420,12 +434,14 @@ def test_final_score_with_minimum_experience():
 
     assert score == 90.0
 
+
 # 24. Final score with minimum skill and semantic similarity
 
 def test_final_score_with_minimum_skill_and_semantic_similarity():
     score = calculate_final_score(0, 0, 100)
 
     assert score == 10.0
+
 
 # 25. Final score with minimum experience and skill
 
@@ -434,6 +450,7 @@ def test_final_score_with_minimum_experience_and_skill():
 
     assert score == 30.0
 
+
 # 26. Final score with minimum semantic similarity and experience
 
 def test_final_score_with_minimum_semantic_similarity_and_experience():
@@ -441,7 +458,6 @@ def test_final_score_with_minimum_semantic_similarity_and_experience():
 
     assert score == 60.0
 
-# 27. Final score with all minimum values
 
 # 27. Final score with minimum skill and maximum semantic similarity
 
