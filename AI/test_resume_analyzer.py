@@ -493,3 +493,10 @@ def test_final_score_with_all_negative_components():
     score = calculate_final_score(-20, -10, -5)
 
     assert score == 0.0
+
+# 32. Final score without skill score
+
+def test_final_score_without_skill_score():
+    score = calculate_final_score(None, 80, 100)
+
+    assert score == 85.0
