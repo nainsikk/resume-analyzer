@@ -472,3 +472,10 @@ def test_final_score_with_negative_semantic_similarity():
     score = calculate_final_score(80, -20, 100)
 
     assert score == 58.0
+
+# 29. Final score with negative skill score
+
+def test_final_score_with_negative_skill_score():
+    score = calculate_final_score(-20, 80, 100)
+
+    assert score == 34.0
