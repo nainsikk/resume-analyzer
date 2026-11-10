@@ -500,3 +500,10 @@ def test_final_score_without_skill_score():
     score = calculate_final_score(None, 80, 100)
 
     assert score == 85.0
+
+# 33. Final score without experience score
+
+def test_final_score_without_experience_score():
+    score = calculate_final_score(80, 80, None)
+
+    assert score == 80.0
