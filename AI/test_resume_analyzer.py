@@ -486,3 +486,10 @@ def test_final_score_with_negative_experience_score():
     score = calculate_final_score(80, 70, -20)
 
     assert score == 69.0
+
+# 31. Final score with all negative components
+
+def test_final_score_with_all_negative_components():
+    score = calculate_final_score(-20, -10, -5)
+
+    assert score == 0.0
