@@ -427,3 +427,9 @@ def test_final_score_with_minimum_skill_and_semantic_similarity():
 
     assert score == 10.0
 
+# 25. Final score with minimum experience and skill
+
+def test_final_score_with_minimum_experience_and_skill():
+    score = calculate_final_score(0, 100, 0)
+
+    assert score == 30.0
