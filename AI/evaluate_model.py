@@ -1,7 +1,11 @@
-
+import sys
 from pathlib import Path
 from datetime import datetime
 from time import perf_counter
+
+# Add the project root directory to Python's import path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from AI.resume_analyzer import analyze_resume
 
@@ -189,15 +193,25 @@ evaluation_cases = [
         Python developer required with 4 years of experience.
         Required skills: Python, SQL, FastAPI and Docker.
         """
+    },
+    {
+        "name": "Fractional Experience Requirement",
+        "expected": "Experience score should reflect 2.5 years against a 3-year requirement.",
+        "resume": """
+        Python developer with 2.5 years of experience.
+        Skills include Python, SQL, FastAPI and Docker.
+        """,
+        "job": """
+        Looking for a Python developer with 3 years of experience.
+        Required skills: Python, SQL, FastAPI and Docker.
+        """
     }
 ]
 
 
 def run_evaluation():
 
-    # Start measuring evaluation duration
     start_time = perf_counter()
-
     report = []
 
     def log(message=""):
@@ -206,7 +220,6 @@ def run_evaluation():
 
     log("\n========== AI MODEL EVALUATION ==========")
 
-    # Record evaluation date and time
     evaluation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log("Evaluation Date and Time: " + evaluation_time)
 
@@ -222,7 +235,6 @@ def run_evaluation():
         log("Test Case: " + case["name"])
         log("Expected Behavior: " + case["expected"])
 
-        # Test input validation
         if case["name"] in [
             "Empty Resume",
             "Empty Job Description",
@@ -340,6 +352,13 @@ def run_evaluation():
                     and result["skill_match_score"] == 100
                 )
 
+            elif case["name"] == "Fractional Experience Requirement":
+                passed = (
+                    result["resume_experience"] == 2.5
+                    and result["required_experience"] == 3.0
+                    and result["experience_score"] == 83.33
+                )
+
             log("Suggestions:")
             for suggestion in result["suggestions"]:
                 log("- " + suggestion)
@@ -351,10 +370,8 @@ def run_evaluation():
 
         log("Evaluation Result: " + ("PASS" if passed else "FAIL"))
 
-    # Calculate total evaluation duration
     evaluation_duration = perf_counter() - start_time
 
-    # Evaluation summary
     log("\n========== EVALUATION SUMMARY ==========")
     log("Total Test Cases: " + str(total_cases))
     log("Passed: " + str(passed_cases))
@@ -374,7 +391,6 @@ def run_evaluation():
 
     log("\n========== EVALUATION COMPLETED ==========")
 
-    # Save evaluation report
     report_path = Path(__file__).with_name("evaluation_report.txt")
 
     report_path.write_text(
@@ -387,4 +403,3 @@ def run_evaluation():
 
 if __name__ == "__main__":
     run_evaluation()
-
