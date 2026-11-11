@@ -43,6 +43,14 @@ def test_job_without_recognized_skills():
 
     assert job_skills == []
 
+def test_skill_extraction_is_case_insensitive():
+    text = "I know python, SQL and MACHINE LEARNING."
+    skills = extract_skills(text)
+
+    assert "Python" in skills
+    assert "SQL" in skills
+    assert "Machine Learning" in skills
+
 
 # 2. Skill matching tests
 
