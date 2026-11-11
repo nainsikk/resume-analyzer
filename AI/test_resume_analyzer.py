@@ -57,6 +57,13 @@ def test_repeated_skill_is_returned_only_once():
 
     assert skills.count("Python") == 1
 
+def test_skill_extraction_with_punctuation():
+    text = "Skills: (Python), JavaScript; and SQL."
+    skills = extract_skills(text)
+
+    assert "Python" in skills
+    assert "JavaScript" in skills
+    assert "SQL" in skills
 
 # 2. Skill matching tests
 
