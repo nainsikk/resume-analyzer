@@ -82,11 +82,34 @@ def test_empty_resume_skills():
 
 
 # 3. Experience extraction tests
-
 def test_experience_extraction():
+
     text = "I have 3 years of experience in software development."
 
     assert extract_experience(text) == 3.0
+
+
+# Additional experience extraction tests
+
+def test_fractional_relevant_experience():
+    text = "I have 2.5 years of relevant experience."
+    assert extract_experience(text) == 2.5
+
+
+def test_experience_with_plus_sign():
+    text = "I have 3+ years of experience."
+    assert extract_experience(text) == 3.0
+
+
+def test_experience_with_yrs_abbreviation():
+    text = "I have 4 yrs of experience."
+    assert extract_experience(text) == 4.0
+
+
+def test_experience_in_worked_for_format():
+    text = "Worked for 4 years as a developer."
+    assert extract_experience(text) == 4.0
+
 
 
 def test_experience_not_mentioned():
