@@ -2,5 +2,6 @@
 __pycache__/
 *.pyc
 .env
+node_modules
 AI/.venv/
 AI/datasets/*.csv
