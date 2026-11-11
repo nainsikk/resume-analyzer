@@ -1,8 +1,6 @@
 
 import re
 
-
-# Skills our AI can recognize
 # Technical skills our AI can recognize
 SKILL_LIST = [
     # Programming languages
@@ -75,12 +73,10 @@ SKILL_LIST = [
 ]
 
 
-
 def extract_skills(text):
     """
-    Find recognized skills in a piece of text.
+    Extract recognized skills from resume or job description text.
     """
-
     if not isinstance(text, str):
         return []
 
@@ -103,19 +99,21 @@ def extract_experience(text):
     Returns:
         Number of years, or None if no experience is found.
     """
-
     if not isinstance(text, str):
         return None
 
-    pattern = (
-        r"(\d+(?:\.\d+)?)\s*\+?\s*"
-        r"(?:years?|yrs?)\s*"
-        r"(?:of\s+)?"
-        r"(?:relevant\s+)?"
-        r"experience"
-    )
+    patterns = [
+        # Examples: 3 years of experience, 2.5 years of relevant experience
+        r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\s*(?:of\s+)?(?:relevant\s+)?experience",
 
-    matches = re.findall(pattern, text, re.IGNORECASE)
+        # Example: Worked for 4 years as a developer
+        r"(?:worked|working)\s+for\s+(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)",
+    ]
+
+    matches = []
+
+    for pattern in patterns:
+        matches.extend(re.findall(pattern, text, re.IGNORECASE))
 
     if not matches:
         return None
