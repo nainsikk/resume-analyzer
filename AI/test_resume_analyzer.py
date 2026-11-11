@@ -20,6 +20,14 @@ def test_skill_extraction():
     assert "SQL" in skills
 
 
+def test_no_duplicate_overlapping_skills():
+    text = "I have strong Communication Skills."
+    skills = extract_skills(text)
+
+    assert "Communication Skills" in skills
+    assert "Communication" not in skills
+
+
 def test_resume_without_recognized_skills():
     resume_skills = extract_skills(
         "I am a hardworking and motivated professional."
@@ -82,10 +90,9 @@ def test_empty_resume_skills():
 
 
 # 3. Experience extraction tests
+
 def test_experience_extraction():
-
     text = "I have 3 years of experience in software development."
-
     assert extract_experience(text) == 3.0
 
 
@@ -111,10 +118,8 @@ def test_experience_in_worked_for_format():
     assert extract_experience(text) == 4.0
 
 
-
 def test_experience_not_mentioned():
     text = "I am a Python developer with strong technical skills."
-
     assert extract_experience(text) is None
 
 
@@ -122,7 +127,7 @@ def test_experience_not_mentioned():
 
 def test_experience_scoring():
     assert calculate_experience_score(3, 2) == 100
-    assert calculate_experience_score(2, 2) == 100  # Exact requirement
+    assert calculate_experience_score(2, 2) == 100
     assert calculate_experience_score(1, 2) == 50
     assert calculate_experience_score(0, 2) == 0
     assert calculate_experience_score(None, 2) is None
@@ -130,13 +135,11 @@ def test_experience_scoring():
 
 def test_experience_more_than_required():
     score = calculate_experience_score(10, 2)
-
     assert score == 100
 
 
 def test_zero_required_experience():
     score = calculate_experience_score(3, 0)
-
     assert score == 100.0
 
 
@@ -196,7 +199,6 @@ def test_complete_resume_analysis():
 
 def test_missing_experience_in_both_documents():
     resume = "Python developer skilled in SQL and Django."
-
     job = "Looking for a Python developer skilled in SQL and Django."
 
     result = analyze_resume(resume, job)
@@ -288,43 +290,36 @@ def test_none_job_description():
 
 def test_final_score_with_all_components():
     score = calculate_final_score(80, 70, 100)
-
     assert score == 79.0
 
 
 def test_final_score_without_experience():
     score = calculate_final_score(80, 70, None)
-
     assert score == 76.67
 
 
 def test_final_score_without_skills():
     score = calculate_final_score(None, 80, 100)
-
     assert score == 85.0
 
 
 def test_final_score_all_components_missing():
     score = calculate_final_score(None, None, None)
-
     assert score is None
 
 
 def test_final_score_never_exceeds_100():
     score = calculate_final_score(120, 110, 105)
-
     assert score == 100.0
 
 
 def test_final_score_never_goes_below_0():
     score = calculate_final_score(-20, -10, -5)
-
     assert score == 0.0
 
 
 def test_final_score_with_all_zero_components():
     score = calculate_final_score(0, 0, 0)
-
     assert score == 0.0
 
 
@@ -342,7 +337,6 @@ def test_both_experience_values_negative():
 
 def test_fractional_experience_scoring():
     score = calculate_experience_score(0.5, 2)
-
     assert score == 25.0
 
 
@@ -350,7 +344,6 @@ def test_fractional_experience_scoring():
 
 def test_final_score_with_only_skill_score():
     score = calculate_final_score(80, None, None)
-
     assert score == 80.0
 
 
@@ -358,7 +351,6 @@ def test_final_score_with_only_skill_score():
 
 def test_final_score_with_only_semantic_similarity():
     score = calculate_final_score(None, 75, None)
-
     assert score == 75.0
 
 
@@ -366,7 +358,6 @@ def test_final_score_with_only_semantic_similarity():
 
 def test_final_score_with_only_experience():
     score = calculate_final_score(None, None, 60)
-
     assert score == 60.0
 
 
@@ -374,7 +365,6 @@ def test_final_score_with_only_experience():
 
 def test_final_score_with_zero_skill_score():
     score = calculate_final_score(0, 80, 100)
-
     assert score == 34.0
 
 
@@ -382,7 +372,6 @@ def test_final_score_with_zero_skill_score():
 
 def test_final_score_with_zero_semantic_similarity():
     score = calculate_final_score(80, 0, 100)
-
     assert score == 58.0
 
 
@@ -390,7 +379,6 @@ def test_final_score_with_zero_semantic_similarity():
 
 def test_final_score_with_zero_experience_score():
     score = calculate_final_score(80, 70, 0)
-
     assert score == 69.0
 
 
@@ -398,7 +386,6 @@ def test_final_score_with_zero_experience_score():
 
 def test_final_score_without_semantic_similarity():
     score = calculate_final_score(80, None, 100)
-
     assert score == 82.86
 
 
@@ -406,7 +393,6 @@ def test_final_score_without_semantic_similarity():
 
 def test_final_score_caps_semantic_similarity_at_100():
     score = calculate_final_score(80, 120, 100)
-
     assert score == 88.0
 
 
@@ -414,7 +400,6 @@ def test_final_score_caps_semantic_similarity_at_100():
 
 def test_final_score_caps_skill_score_at_100():
     score = calculate_final_score(120, 80, 100)
-
     assert score == 94.0
 
 
@@ -422,7 +407,6 @@ def test_final_score_caps_skill_score_at_100():
 
 def test_final_score_caps_experience_at_100():
     score = calculate_final_score(80, 80, 120)
-
     assert score == 82.0
 
 
@@ -430,7 +414,6 @@ def test_final_score_caps_experience_at_100():
 
 def test_final_score_with_all_maximum_values():
     score = calculate_final_score(100, 100, 100)
-
     assert score == 100.0
 
 
@@ -438,7 +421,6 @@ def test_final_score_with_all_maximum_values():
 
 def test_final_score_with_minimum_skill_and_maximum_other_components():
     score = calculate_final_score(0, 100, 100)
-
     assert score == 40.0
 
 
@@ -446,7 +428,6 @@ def test_final_score_with_minimum_skill_and_maximum_other_components():
 
 def test_final_score_with_minimum_semantic_similarity():
     score = calculate_final_score(100, 0, 100)
-
     assert score == 70.0
 
 
@@ -454,7 +435,6 @@ def test_final_score_with_minimum_semantic_similarity():
 
 def test_final_score_with_minimum_experience():
     score = calculate_final_score(100, 100, 0)
-
     assert score == 90.0
 
 
@@ -462,7 +442,6 @@ def test_final_score_with_minimum_experience():
 
 def test_final_score_with_minimum_skill_and_semantic_similarity():
     score = calculate_final_score(0, 0, 100)
-
     assert score == 10.0
 
 
@@ -470,7 +449,6 @@ def test_final_score_with_minimum_skill_and_semantic_similarity():
 
 def test_final_score_with_minimum_experience_and_skill():
     score = calculate_final_score(0, 100, 0)
-
     assert score == 30.0
 
 
@@ -478,7 +456,6 @@ def test_final_score_with_minimum_experience_and_skill():
 
 def test_final_score_with_minimum_semantic_similarity_and_experience():
     score = calculate_final_score(100, 0, 0)
-
     assert score == 60.0
 
 
@@ -486,57 +463,57 @@ def test_final_score_with_minimum_semantic_similarity_and_experience():
 
 def test_final_score_with_minimum_skill_and_maximum_semantic_similarity():
     score = calculate_final_score(0, 100, 0)
-
     assert score == 30.0
+
 
 # 28. Final score with negative semantic similarity
 
 def test_final_score_with_negative_semantic_similarity():
     score = calculate_final_score(80, -20, 100)
-
     assert score == 58.0
+
 
 # 29. Final score with negative skill score
 
 def test_final_score_with_negative_skill_score():
     score = calculate_final_score(-20, 80, 100)
-
     assert score == 34.0
+
 
 # 30. Final score with negative experience score
 
 def test_final_score_with_negative_experience_score():
     score = calculate_final_score(80, 70, -20)
-
     assert score == 69.0
+
 
 # 31. Final score with all negative components
 
 def test_final_score_with_all_negative_components():
     score = calculate_final_score(-20, -10, -5)
-
     assert score == 0.0
+
 
 # 32. Final score without skill score
 
 def test_final_score_without_skill_score():
     score = calculate_final_score(None, 80, 100)
-
     assert score == 85.0
+
 
 # 33. Final score without experience score
 
 def test_final_score_without_experience_score():
     score = calculate_final_score(80, 80, None)
-
     assert score == 80.0
+
 
 # 34. Final score without semantic similarity
 
 def test_final_score_without_semantic_similarity():
     score = calculate_final_score(80, None, 100)
-
     assert score == 82.86
+
 
 # 35. Final score without semantic similarity and with zero experience
 
@@ -544,9 +521,9 @@ def test_final_score_without_semantic_similarity_and_zero_experience():
     score = calculate_final_score(90, None, 0)
     assert score == 77.14
 
+
 # 36. Final score without skill and experience scores
 
 def test_final_score_without_skill_and_experience():
     score = calculate_final_score(None, 80, None)
-
     assert score == 80.0
