@@ -3,12 +3,19 @@ import re
 
 
 # Skills our AI can recognize
+# Technical skills our AI can recognize
 SKILL_LIST = [
+    # Programming languages
     "Python",
     "Java",
     "JavaScript",
+    "C",
     "C++",
-    "SQL",
+    "C#",
+    "Go",
+    "PHP",
+
+    # Web development
     "HTML",
     "CSS",
     "React",
@@ -16,24 +23,49 @@ SKILL_LIST = [
     "FastAPI",
     "Django",
     "Flask",
+    "REST API",
+    "GraphQL",
+
+    # Databases
+    "SQL",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+
+    # Artificial Intelligence and Machine Learning
     "Machine Learning",
     "Deep Learning",
-    "Data Analysis",
-    "Data Science",
     "Natural Language Processing",
     "NLP",
     "Artificial Intelligence",
-    "Excel",
-    "Power BI",
-    "Tableau",
-    "Pandas",
-    "NumPy",
+    "Generative AI",
     "Scikit-learn",
     "TensorFlow",
     "PyTorch",
-    "Git",
-    "Docker",
+
+    # Data Science
+    "Data Analysis",
+    "Data Science",
+    "Pandas",
+    "NumPy",
+    "Apache Spark",
+    "Excel",
+    "Power BI",
+    "Tableau",
+
+    # Cloud and DevOps
     "AWS",
+    "Microsoft Azure",
+    "Google Cloud",
+    "Docker",
+    "Kubernetes",
+    "Linux",
+
+    # Development tools
+    "Git",
+    "GitHub",
+
+    # Professional skills
     "Communication",
     "Communication Skills",
     "Project Management",
@@ -41,6 +73,7 @@ SKILL_LIST = [
     "Leadership",
     "Teamwork",
 ]
+
 
 
 def extract_skills(text):
