@@ -143,6 +143,13 @@ def test_experience_not_mentioned():
     text = "I am a Python developer with strong technical skills."
     assert extract_experience(text) is None
 
+def test_experience_extraction_is_case_insensitive():
+    text = "I have 3 YEARS OF EXPERIENCE in software development."
+
+    experience = extract_experience(text)
+
+    assert experience == 3.0
+
 
 # 4. Experience scoring tests
 
