@@ -4,89 +4,66 @@ import re
 # Technical skills our AI can recognize
 SKILL_LIST = [
     # Programming languages
-    "Python",
-    "Java",
-    "JavaScript",
-    "C",
-    "C++",
-    "C#",
-    "Go",
-    "PHP",
+    "Python", "Java", "JavaScript", "C", "C++", "C#", "Go", "PHP",
 
     # Web development
-    "HTML",
-    "CSS",
-    "React",
-    "Node.js",
-    "FastAPI",
-    "Django",
-    "Flask",
-    "REST API",
-    "GraphQL",
+    "HTML", "CSS", "React", "Node.js", "FastAPI", "Django", "Flask",
+    "REST API", "GraphQL",
 
     # Databases
-    "SQL",
-    "PostgreSQL",
-    "MySQL",
-    "MongoDB",
+    "SQL", "PostgreSQL", "MySQL", "MongoDB",
 
     # Artificial Intelligence and Machine Learning
-    "Machine Learning",
-    "Deep Learning",
-    "Natural Language Processing",
-    "NLP",
-    "Artificial Intelligence",
-    "Generative AI",
-    "Scikit-learn",
-    "TensorFlow",
-    "PyTorch",
+    "Machine Learning", "Deep Learning", "Natural Language Processing",
+    "NLP", "Artificial Intelligence", "Generative AI", "Scikit-learn",
+    "TensorFlow", "PyTorch",
 
     # Data Science
-    "Data Analysis",
-    "Data Science",
-    "Pandas",
-    "NumPy",
-    "Apache Spark",
-    "Excel",
-    "Power BI",
-    "Tableau",
+    "Data Analysis", "Data Science", "Pandas", "NumPy", "Apache Spark",
+    "Excel", "Power BI", "Tableau",
 
     # Cloud and DevOps
-    "AWS",
-    "Microsoft Azure",
-    "Google Cloud",
-    "Docker",
-    "Kubernetes",
+    "AWS", "Microsoft Azure", "Google Cloud", "Docker", "Kubernetes",
     "Linux",
 
     # Development tools
-    "Git",
-    "GitHub",
+    "Git", "GitHub",
 
     # Professional skills
-    "Communication",
-    "Communication Skills",
-    "Project Management",
-    "Problem Solving",
-    "Leadership",
-    "Teamwork",
+    "Communication", "Communication Skills", "Project Management",
+    "Problem Solving", "Leadership", "Teamwork",
 ]
 
 
 def extract_skills(text):
     """
     Extract recognized skills from resume or job description text.
+    Avoid returning shorter skills that are already part of
+    a longer recognized skill phrase.
     """
     if not isinstance(text, str):
         return []
 
     found_skills = []
+    matched_spans = []
 
-    for skill in SKILL_LIST:
+    sorted_skills = sorted(SKILL_LIST, key=len, reverse=True)
+
+    for skill in sorted_skills:
         pattern = r"(?<!\w)" + re.escape(skill) + r"(?!\w)"
 
-        if re.search(pattern, text, re.IGNORECASE):
-            found_skills.append(skill)
+        for match in re.finditer(pattern, text, re.IGNORECASE):
+            start, end = match.span()
+
+            overlaps = any(
+                start < existing_end and end > existing_start
+                for existing_start, existing_end in matched_spans
+            )
+
+            if not overlaps:
+                found_skills.append(skill)
+                matched_spans.append((start, end))
+                break
 
     return found_skills
 
@@ -103,10 +80,7 @@ def extract_experience(text):
         return None
 
     patterns = [
-        # Examples: 3 years of experience, 2.5 years of relevant experience
         r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\s*(?:of\s+)?(?:relevant\s+)?experience",
-
-        # Example: Worked for 4 years as a developer
         r"(?:worked|working)\s+for\s+(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)",
     ]
 
@@ -138,10 +112,7 @@ if __name__ == "__main__":
 
     print("Sample resume:")
     print(sample_resume)
-
     print("\nSkills detected:")
     print(skills)
-
     print("\nTotal skills found:", len(skills))
-
     print("\nExperience detected:", experience, "years")
