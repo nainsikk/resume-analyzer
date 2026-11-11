@@ -1,32 +1,44 @@
-import { useEffect, useState } from 'react'
-import { checkHealth, getErrorMessage } from '../services/api'
+import { Link } from 'react-router-dom'
+
+const steps = [
+  { title: '1. Upload', text: 'Upload your resume as a PDF (up to 5 MB).' },
+  { title: '2. Add a job', text: 'Paste the job description you are applying for.' },
+  { title: '3. Get results', text: 'See your match score, missing skills and suggestions.' },
+]
 
 function HomePage() {
-  const [status, setStatus] = useState('checking') // checking | online | offline
-  const [errorMessage, setErrorMessage] = useState('')
-
-  useEffect(() => {
-    checkHealth()
-      .then(() => setStatus('online'))
-      .catch((error) => {
-        setStatus('offline')
-        setErrorMessage(getErrorMessage(error))
-      })
-  }, [])
-
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-slate-800">AI Resume Analyzer</h1>
-      <p className="mt-2 text-slate-600">
-        Upload your resume and compare it with a job description.
-      </p>
+    <div className="space-y-10">
+      <section className="text-center">
+        <h1 className="text-3xl font-bold text-slate-800 sm:text-4xl">AI Resume Analyzer</h1>
+        <p className="mx-auto mt-3 max-w-xl text-slate-600">
+          Compare your resume with a job description and find out which skills match,
+          which are missing, and how to improve.
+        </p>
+        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            to="/upload"
+            className="rounded-lg bg-blue-600 px-6 py-3 font-medium text-white hover:bg-blue-700"
+          >
+            Analyze my resume
+          </Link>
+          <Link
+            to="/history"
+            className="rounded-lg border border-slate-300 bg-white px-6 py-3 font-medium text-slate-700 hover:bg-slate-50"
+          >
+            View history
+          </Link>
+        </div>
+      </section>
 
-      {/* Temporary connection check. We remove it later. */}
-      <div className="mt-6 inline-block rounded-lg bg-white px-4 py-2 shadow text-sm">
-        {status === 'checking' && <span className="text-slate-500">Checking server...</span>}
-        {status === 'online' && <span className="text-green-600">Server connected</span>}
-        {status === 'offline' && <span className="text-red-600">{errorMessage}</span>}
-      </div>
+      <section className="grid gap-4 sm:grid-cols-3">
+        {steps.map((step) => (
+          <div key={step.title} className="rounded-xl bg-white p-6 shadow">
+            <h2 className="font-semibold text-slate-800">{step.title}</h2>
+            <p className="mt-2 text-sm text-slate-600">{step.text}</p>
+          </div>
+        ))}
+      </section>
     </div>
   )
 }

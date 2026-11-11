@@ -9,10 +9,10 @@ const links = [
 function Navbar() {
   return (
     <header className="bg-white shadow-sm">
-      <nav className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+      <nav className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
         <span className="text-lg font-bold text-blue-600">Resume Analyzer</span>
 
-        <div className="flex gap-6">
+        <div className="flex gap-4 sm:gap-6">
           {links.map((link) => (
             <NavLink
               key={link.to}
