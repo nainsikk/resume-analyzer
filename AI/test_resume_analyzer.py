@@ -51,6 +51,12 @@ def test_skill_extraction_is_case_insensitive():
     assert "SQL" in skills
     assert "Machine Learning" in skills
 
+def test_repeated_skill_is_returned_only_once():
+    text = "Python developer with Python experience and Python projects."
+    skills = extract_skills(text)
+
+    assert skills.count("Python") == 1
+
 
 # 2. Skill matching tests
 
