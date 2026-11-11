@@ -150,6 +150,13 @@ def test_experience_extraction_is_case_insensitive():
 
     assert experience == 3.0
 
+def test_experience_extraction_with_punctuation():
+    text = "Experience: (3 years of experience)."
+
+    experience = extract_experience(text)
+
+    assert experience == 3.0
+
 
 # 4. Experience scoring tests
 
