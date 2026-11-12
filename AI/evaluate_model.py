@@ -239,6 +239,19 @@ evaluation_categories = {
 }
 
 
+# Names of cases that test invalid or missing inputs
+validation_cases = [
+    "Empty Resume",
+    "Empty Job Description",
+    "Invalid Resume Input",
+    "Whitespace-Only Resume",
+    "Whitespace-Only Job Description",
+    "Invalid Job Description Input",
+    "Missing Job Description",
+    "Missing Resume"
+]
+
+
 def run_evaluation():
 
     start_time = perf_counter()
@@ -268,16 +281,7 @@ def run_evaluation():
         log("Test Case: " + case["name"])
         log("Expected Behavior: " + case["expected"])
 
-        if case["name"] in [
-            "Empty Resume",
-            "Empty Job Description",
-            "Invalid Resume Input",
-            "Whitespace-Only Resume",
-            "Whitespace-Only Job Description",
-            "Invalid Job Description Input",
-            "Missing Job Description",
-            "Missing Resume"
-        ]:
+        if case["name"] in validation_cases:
 
             try:
                 analyze_resume(case["resume"], case["job"])
