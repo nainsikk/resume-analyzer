@@ -1,3 +1,4 @@
+
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -376,6 +377,11 @@ def run_evaluation():
     log("Total Test Cases: " + str(total_cases))
     log("Passed: " + str(passed_cases))
     log("Failed: " + str(failed_cases))
+
+    # Additional evaluation breakdown
+    log("\nTest Case Breakdown:")
+    log("Successful Test Cases: " + str(passed_cases))
+    log("Unsuccessful Test Cases: " + str(failed_cases))
 
     pass_percentage = (
         (passed_cases / total_cases) * 100
