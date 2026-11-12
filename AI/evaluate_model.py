@@ -210,10 +210,42 @@ evaluation_cases = [
 ]
 
 
+# Categories used for evaluation reporting
+evaluation_categories = {
+    "Matching Quality": [
+        "Strong Match",
+        "Partial Match",
+        "Poor Match",
+        "No Matching Skills",
+        "No Job Skills Detected",
+        "Resume with No Detected Skills"
+    ],
+    "Experience Evaluation": [
+        "Experience Gap",
+        "Missing Experience Information",
+        "Missing Resume Experience with Required Experience",
+        "Fractional Experience Requirement"
+    ],
+    "Input Validation": [
+        "Empty Resume",
+        "Empty Job Description",
+        "Invalid Resume Input",
+        "Whitespace-Only Resume",
+        "Whitespace-Only Job Description",
+        "Invalid Job Description Input",
+        "Missing Job Description",
+        "Missing Resume"
+    ]
+}
+
+
 def run_evaluation():
 
     start_time = perf_counter()
     report = []
+
+    # Store each test result for category-wise reporting
+    case_results = {}
 
     def log(message=""):
         print(message)
@@ -364,6 +396,9 @@ def run_evaluation():
             for suggestion in result["suggestions"]:
                 log("- " + suggestion)
 
+        # Save the result for category-wise reporting
+        case_results[case["name"]] = passed
+
         if passed:
             passed_cases += 1
         else:
@@ -378,17 +413,33 @@ def run_evaluation():
     log("Passed: " + str(passed_cases))
     log("Failed: " + str(failed_cases))
 
-    # Additional evaluation breakdown
     log("\nTest Case Breakdown:")
     log("Successful Test Cases: " + str(passed_cases))
     log("Unsuccessful Test Cases: " + str(failed_cases))
+
+    # Display category-wise evaluation results
+    log("\n========== CATEGORY-WISE EVALUATION ==========")
+
+    for category, test_names in evaluation_categories.items():
+
+        category_passed = sum(
+            1 for name in test_names
+            if case_results.get(name, False)
+        )
+
+        category_failed = len(test_names) - category_passed
+
+        log("\nCategory: " + category)
+        log("Total Cases: " + str(len(test_names)))
+        log("Passed: " + str(category_passed))
+        log("Failed: " + str(category_failed))
 
     pass_percentage = (
         (passed_cases / total_cases) * 100
         if total_cases > 0 else 0
     )
 
-    log("Pass Percentage: " + str(round(pass_percentage, 2)) + "%")
+    log("\nPass Percentage: " + str(round(pass_percentage, 2)) + "%")
 
     overall_result = "PASS" if failed_cases == 0 else "FAIL"
     log("Overall Result: " + overall_result)
