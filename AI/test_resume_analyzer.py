@@ -585,3 +585,35 @@ def test_semantic_similarity_is_within_valid_range():
 
     assert result["semantic_similarity"] is not None
     assert 0 <= result["semantic_similarity"] <= 100
+
+
+# 38. Related descriptions should score higher than unrelated descriptions
+
+def test_related_descriptions_have_higher_semantic_similarity():
+
+    related_resume = """
+    Python developer experienced in backend development,
+    SQL databases, Django and REST APIs.
+    """
+
+    related_job = """
+    Looking for a backend software developer with
+    Python, SQL, Django and REST API experience.
+    """
+
+    unrelated_job = """
+    Looking for a graphic designer experienced in
+    illustration, typography, branding and visual design.
+    """
+
+    related_score = analyze_resume(
+        related_resume,
+        related_job
+    )["semantic_similarity"]
+
+    unrelated_score = analyze_resume(
+        related_resume,
+        unrelated_job
+    )["semantic_similarity"]
+
+    assert related_score > unrelated_score
