@@ -659,3 +659,21 @@ def test_empty_resume_does_not_run_semantic_matching(monkeypatch):
             "",
             "Looking for a Python developer."
         )
+
+# 41. Empty job description should be rejected before semantic matching
+
+def test_empty_job_does_not_run_semantic_matching(monkeypatch):
+
+    def fail_if_called(*args, **kwargs):
+        pytest.fail("Semantic matching should not run for an empty job description")
+
+    monkeypatch.setattr(
+        "AI.resume_analyzer.calculate_similarity",
+        fail_if_called
+    )
+
+    with pytest.raises(ValueError):
+        analyze_resume(
+            "Python developer with SQL experience.",
+            ""
+        )
