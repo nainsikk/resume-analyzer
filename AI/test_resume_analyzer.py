@@ -641,3 +641,21 @@ def test_semantic_similarity_is_consistent():
     )["semantic_similarity"]
 
     assert first_result == second_result
+
+# 40. Empty resume should be rejected before semantic matching
+
+def test_empty_resume_does_not_run_semantic_matching(monkeypatch):
+
+    def fail_if_called(*args, **kwargs):
+        pytest.fail("Semantic matching should not run for an empty resume")
+
+    monkeypatch.setattr(
+        "AI.resume_analyzer.calculate_similarity",
+        fail_if_called
+    )
+
+    with pytest.raises(ValueError):
+        analyze_resume(
+            "",
+            "Looking for a Python developer."
+        )
