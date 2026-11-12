@@ -144,20 +144,19 @@ def analyze_resume(resume_text, job_description):
     }
 
 
-resume_text = """
-I am a software developer with 3 years of experience.
-I have worked with Python, SQL, Machine Learning,
-Data Analysis, Pandas and Git.
-"""
-
-job_description = """
-We are looking for a developer with 2 years of experience.
-Required skills include Python, SQL, FastAPI,
-Machine Learning and Docker.
-"""
-
-
 if __name__ == "__main__":
+
+    resume_text = """
+    I am a software developer with 3 years of experience.
+    I have worked with Python, SQL, Machine Learning,
+    Data Analysis, Pandas and Git.
+    """
+
+    job_description = """
+    We are looking for a developer with 2 years of experience.
+    Required skills include Python, SQL, FastAPI,
+    Machine Learning and Docker.
+    """
 
     print("\nStarting Resume Analysis...")
 
