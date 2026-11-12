@@ -617,3 +617,27 @@ def test_related_descriptions_have_higher_semantic_similarity():
     )["semantic_similarity"]
 
     assert related_score > unrelated_score
+
+# 39. Semantic similarity consistency test
+
+def test_semantic_similarity_is_consistent():
+
+    resume = """
+    Python developer with experience in SQL,
+    Django and backend development.
+    """
+
+    job = """
+    Looking for a Python developer skilled in
+    SQL, Django and backend development.
+    """
+
+    first_result = analyze_resume(
+        resume, job
+    )["semantic_similarity"]
+
+    second_result = analyze_resume(
+        resume, job
+    )["semantic_similarity"]
+
+    assert first_result == second_result
