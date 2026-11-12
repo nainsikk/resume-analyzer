@@ -43,6 +43,7 @@ def test_job_without_recognized_skills():
 
     assert job_skills == []
 
+
 def test_skill_extraction_is_case_insensitive():
     text = "I know python, SQL and MACHINE LEARNING."
     skills = extract_skills(text)
@@ -51,11 +52,13 @@ def test_skill_extraction_is_case_insensitive():
     assert "SQL" in skills
     assert "Machine Learning" in skills
 
+
 def test_repeated_skill_is_returned_only_once():
     text = "Python developer with Python experience and Python projects."
     skills = extract_skills(text)
 
     assert skills.count("Python") == 1
+
 
 def test_skill_extraction_with_punctuation():
     text = "Skills: (Python), JavaScript; and SQL."
@@ -64,6 +67,7 @@ def test_skill_extraction_with_punctuation():
     assert "Python" in skills
     assert "JavaScript" in skills
     assert "SQL" in skills
+
 
 # 2. Skill matching tests
 
@@ -117,8 +121,6 @@ def test_experience_extraction():
     assert extract_experience(text) == 3.0
 
 
-# Additional experience extraction tests
-
 def test_fractional_relevant_experience():
     text = "I have 2.5 years of relevant experience."
     assert extract_experience(text) == 2.5
@@ -143,12 +145,14 @@ def test_experience_not_mentioned():
     text = "I am a Python developer with strong technical skills."
     assert extract_experience(text) is None
 
+
 def test_experience_extraction_is_case_insensitive():
     text = "I have 3 YEARS OF EXPERIENCE in software development."
 
     experience = extract_experience(text)
 
     assert experience == 3.0
+
 
 def test_experience_extraction_with_punctuation():
     text = "Experience: (3 years of experience)."
@@ -562,3 +566,22 @@ def test_final_score_without_semantic_similarity_and_zero_experience():
 def test_final_score_without_skill_and_experience():
     score = calculate_final_score(None, 80, None)
     assert score == 80.0
+
+
+# 37. Semantic similarity score range test
+
+def test_semantic_similarity_is_within_valid_range():
+    resume = """
+    Python developer with experience in Python,
+    SQL, Django and backend development.
+    """
+
+    job = """
+    Looking for a backend developer skilled in
+    Python, SQL and Django.
+    """
+
+    result = analyze_resume(resume, job)
+
+    assert result["semantic_similarity"] is not None
+    assert 0 <= result["semantic_similarity"] <= 100
