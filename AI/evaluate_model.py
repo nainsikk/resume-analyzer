@@ -206,6 +206,18 @@ evaluation_cases = [
         Looking for a Python developer with 3 years of experience.
         Required skills: Python, SQL, FastAPI and Docker.
         """
+    },
+    {
+        "name": "Exceeds Required Experience",
+        "expected": "Experience score should be 100 when resume experience exceeds the job requirement.",
+        "resume": """
+        Python developer with 5 years of experience.
+        Skills include Python, SQL, FastAPI and Docker.
+        """,
+        "job": """
+        Looking for a Python developer with 3 years of experience.
+        Required skills: Python, SQL, FastAPI and Docker.
+        """
     }
 ]
 
@@ -224,7 +236,8 @@ evaluation_categories = {
         "Experience Gap",
         "Missing Experience Information",
         "Missing Resume Experience with Required Experience",
-        "Fractional Experience Requirement"
+        "Fractional Experience Requirement",
+        "Exceeds Required Experience"
     ],
     "Input Validation": [
         "Empty Resume",
@@ -256,8 +269,6 @@ def run_evaluation():
 
     start_time = perf_counter()
     report = []
-
-    # Store each test result for category-wise reporting
     case_results = {}
 
     def log(message=""):
@@ -396,11 +407,17 @@ def run_evaluation():
                     and result["experience_score"] == 83.33
                 )
 
+            elif case["name"] == "Exceeds Required Experience":
+                passed = (
+                    result["resume_experience"] == 5.0
+                    and result["required_experience"] == 3.0
+                    and result["experience_score"] == 100
+                )
+
             log("Suggestions:")
             for suggestion in result["suggestions"]:
                 log("- " + suggestion)
 
-        # Save the result for category-wise reporting
         case_results[case["name"]] = passed
 
         if passed:
@@ -421,7 +438,6 @@ def run_evaluation():
     log("Successful Test Cases: " + str(passed_cases))
     log("Unsuccessful Test Cases: " + str(failed_cases))
 
-    # Display category-wise evaluation results
     log("\n========== CATEGORY-WISE EVALUATION ==========")
 
     for category, test_names in evaluation_categories.items():
@@ -460,6 +476,7 @@ def run_evaluation():
     )
 
     print("\nEvaluation report saved to:", report_path)
+
     return failed_cases
 
 
