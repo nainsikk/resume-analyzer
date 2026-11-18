@@ -460,7 +460,9 @@ def run_evaluation():
     )
 
     print("\nEvaluation report saved to:", report_path)
+    return failed_cases
 
 
 if __name__ == "__main__":
-    run_evaluation()
+    failed_cases = run_evaluation()
+    sys.exit(0 if failed_cases == 0 else 1)
