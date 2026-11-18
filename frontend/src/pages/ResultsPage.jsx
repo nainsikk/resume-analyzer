@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ErrorMessage from '../components/ErrorMessage'
 import LoadingSpinner from '../components/LoadingSpinner'
-import ScoreGauge from '../components/ScoreGauge'  // NEW
+import ScoreGauge from '../components/ScoreGauge'
 import SkillChips from '../components/SkillChips'
-import SkillsChart from '../components/SkillsChart'  // NEW
+import SkillsChart from '../components/SkillsChart'
 import { getAnalysis, getErrorMessage } from '../services/api'
 
 function ResultsPage() {
@@ -16,8 +16,6 @@ function ResultsPage() {
 
   useEffect(() => {
     let cancelled = false
-    setLoading(true)
-    setError('')
 
     getAnalysis(id)
       .then((data) => {
@@ -35,12 +33,18 @@ function ResultsPage() {
     }
   }, [id, attempt])
 
+  function handleRetry() {
+    setLoading(true)
+    setError('')
+    setAttempt((n) => n + 1)
+  }
+
   if (loading) return <LoadingSpinner message="Loading your results..." />
 
   if (error) {
     return (
       <div className="space-y-4">
-        <ErrorMessage message={error} onRetry={() => setAttempt((n) => n + 1)} />
+        <ErrorMessage message={error} onRetry={handleRetry} />
         <Link to="/upload" className="text-sm font-medium text-blue-600 underline">
           Analyze a resume
         </Link>
@@ -60,7 +64,6 @@ function ResultsPage() {
         </Link>
       </div>
 
-      {/* NEW: gauges replace the plain number cards */}
       <div className="grid gap-4 sm:grid-cols-2">
         <ScoreGauge label="Match score" value={analysis.match_score} suffix=" / 100" />
         {analysis.semantic_similarity != null ? (
@@ -77,7 +80,6 @@ function ResultsPage() {
         )}
       </div>
 
-      {/* NEW: skills chart, then the chips */}
       <SkillsChart
         matchedCount={analysis.matched_skills.length}
         missingCount={analysis.missing_skills.length}
