@@ -1,0 +1,190 @@
+
+========== AI MODEL EVALUATION ==========
+Evaluation Date and Time: 2026-11-07 01:58:18
+Total Test Cases: 17
+
+----------------------------------------
+Test Case: Strong Match
+Expected Behavior: Most required skills should match.
+
+Final Match Score: 99.08
+Skill Match Score: 100.0
+Semantic Similarity: 96.92
+Experience Score: 100
+Matched Skills: ['docker', 'fastapi', 'machine learning', 'python', 'sql']
+Missing Skills: []
+Suggestions:
+- Your resume covers the listed job skills well. Keep your experience and project descriptions specific.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Partial Match
+Expected Behavior: Some required skills should be missing.
+
+Final Match Score: 53.83
+Skill Match Score: 40.0
+Semantic Similarity: 82.76
+Experience Score: 50.0
+Matched Skills: ['python', 'sql']
+Missing Skills: ['docker', 'fastapi', 'machine learning']
+Suggestions:
+- Consider developing these missing skills: docker, fastapi, machine learning
+- The job asks for 2 years of experience, while your resume states 1 years.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Poor Match
+Expected Behavior: Most required technical skills should be missing.
+
+Final Match Score: 19.69
+Skill Match Score: 0.0
+Semantic Similarity: 43.4
+Experience Score: 66.67
+Matched Skills: []
+Missing Skills: ['django', 'docker', 'fastapi', 'python', 'sql']
+Suggestions:
+- Consider developing these missing skills: django, docker, fastapi, python, sql
+- The job asks for 3 years of experience, while your resume states 2 years.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Experience Gap
+Expected Behavior: Skills should match, but experience score should be lower.
+
+Final Match Score: 91.06
+Skill Match Score: 100.0
+Semantic Similarity: 96.88
+Experience Score: 20.0
+Matched Skills: ['docker', 'fastapi', 'python', 'sql']
+Missing Skills: []
+Suggestions:
+- The job asks for 5 years of experience, while your resume states 1 years.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Missing Experience Information
+Expected Behavior: Experience score should be unavailable.
+
+Final Match Score: 95.28
+Skill Match Score: 100.0
+Semantic Similarity: 85.85
+Experience Score: None
+Matched Skills: ['fastapi', 'machine learning', 'python', 'sql']
+Missing Skills: []
+Suggestions:
+- Add your years of relevant professional experience to your resume, if applicable.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: No Matching Skills
+Expected Behavior: No required job skills should match the resume.
+
+Final Match Score: 24.93
+Skill Match Score: 0.0
+Semantic Similarity: 49.78
+Experience Score: 100.0
+Matched Skills: []
+Missing Skills: ['django', 'docker', 'fastapi', 'python', 'sql']
+Suggestions:
+- Consider developing these missing skills: django, docker, fastapi, python, sql
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Empty Resume
+Expected Behavior: Analyzer should reject an empty resume.
+Validation Message: Resume text cannot be empty.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Empty Job Description
+Expected Behavior: Analyzer should reject an empty job description.
+Validation Message: Job description cannot be empty.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Invalid Resume Input
+Expected Behavior: Analyzer should reject a non-string resume input.
+Validation Message: Resume text must be a string.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Whitespace-Only Resume
+Expected Behavior: Analyzer should reject a resume containing only spaces.
+Validation Message: Resume text cannot be empty.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Whitespace-Only Job Description
+Expected Behavior: Analyzer should reject a job description containing only spaces.
+Validation Message: Job description cannot be empty.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Invalid Job Description Input
+Expected Behavior: Analyzer should reject a non-string job description input.
+Validation Message: Job description must be a string.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Missing Job Description
+Expected Behavior: Analyzer should reject a None job description.
+Validation Message: Job description must be a string.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Missing Resume
+Expected Behavior: Analyzer should reject a None resume.
+Validation Message: Resume text must be a string.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: No Job Skills Detected
+Expected Behavior: Skill match score should be unavailable when no job skills are detected.
+
+Final Match Score: 45.08
+Skill Match Score: None
+Semantic Similarity: 45.08
+Experience Score: None
+Matched Skills: []
+Missing Skills: []
+Suggestions:
+- No recognized job skills were found. Review the job description or expand the skill vocabulary.
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Resume with No Detected Skills
+Expected Behavior: No resume skills should match when no recognized resume skills are detected.
+
+Final Match Score: 8.43
+Skill Match Score: 0.0
+Semantic Similarity: 25.28
+Experience Score: None
+Matched Skills: []
+Missing Skills: ['django', 'docker', 'fastapi', 'python', 'sql']
+Suggestions:
+- Consider developing these missing skills: django, docker, fastapi, python, sql
+Evaluation Result: PASS
+
+----------------------------------------
+Test Case: Missing Resume Experience with Required Experience
+Expected Behavior: Experience score should be unavailable when the job requires experience but the resume does not mention it.
+
+Final Match Score: 96.53
+Skill Match Score: 100.0
+Semantic Similarity: 89.58
+Experience Score: None
+Matched Skills: ['docker', 'fastapi', 'python', 'sql']
+Missing Skills: []
+Suggestions:
+- Add your years of relevant professional experience to your resume, if applicable.
+Evaluation Result: PASS
+
+========== EVALUATION SUMMARY ==========
+Total Test Cases: 17
+Passed: 17
+Failed: 0
+Pass Percentage: 100.0%
+Overall Result: PASS
+Evaluation Duration: 3.0 seconds
+
+========== EVALUATION COMPLETED ==========
