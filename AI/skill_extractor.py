@@ -7,11 +7,11 @@ SKILL_LIST = [
     "Python", "Java", "JavaScript", "C", "C++", "C#", "Go", "PHP",
 
     # Web development
-    "HTML", "CSS", "React", "Node.js", "FastAPI", "Django", "Flask",
-    "REST API", "GraphQL",
+    "HTML", "CSS", "React", "Node.js", "Node", "FastAPI", "Django",
+    "Flask", "REST API", "GraphQL",
 
     # Databases
-    "SQL", "PostgreSQL", "MySQL", "MongoDB",
+    "SQL", "PostgreSQL", "Postgres", "MySQL", "MongoDB",
 
     # Artificial Intelligence and Machine Learning
     "Machine Learning", "Deep Learning", "Natural Language Processing",
