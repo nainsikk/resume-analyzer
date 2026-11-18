@@ -18,8 +18,6 @@ function HistoryPage() {
 
   useEffect(() => {
     let cancelled = false
-    setLoading(true)
-    setError('')
 
     getHistory()
       .then((data) => {
@@ -37,10 +35,16 @@ function HistoryPage() {
     }
   }, [attempt])
 
+  function handleRetry() {
+    setLoading(true)
+    setError('')
+    setAttempt((n) => n + 1)
+  }
+
   if (loading) return <LoadingSpinner message="Loading history..." />
 
   if (error) {
-    return <ErrorMessage message={error} onRetry={() => setAttempt((n) => n + 1)} />
+    return <ErrorMessage message={error} onRetry={handleRetry} />
   }
 
   return (
@@ -90,7 +94,5 @@ function HistoryPage() {
     </div>
   )
 }
-
-
 
 export default HistoryPage;
