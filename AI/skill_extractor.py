@@ -80,7 +80,7 @@ def extract_experience(text):
         return None
 
     patterns = [
-        r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\s*(?:of\s+)?(?:relevant\s+)?experience",
+        r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\s*(?:(?:of\s+)?(?:relevant\s+)?|working\s+)?experience",
         r"(?:worked|working)\s+for\s+(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)",
     ]
 
