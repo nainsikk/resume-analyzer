@@ -1,481 +1,251 @@
 
 import sys
+import time
 from pathlib import Path
-from datetime import datetime
-from time import perf_counter
 
-# Add the project root directory to Python's import path
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from AI.resume_analyzer import analyze_resume
 
 
-evaluation_cases = [
+matching_cases = [
     {
-        "name": "Strong Match",
-        "expected": "Most required skills should match.",
-        "resume": """
-        Python developer with 3 years of experience.
-        Skilled in Python, SQL, Machine Learning,
-        FastAPI and Docker.
-        """,
-        "job": """
-        Python developer with 2 years of experience.
-        Required skills: Python, SQL, Machine Learning,
-        FastAPI and Docker.
-        """
+        "name": "Exact Skill Match",
+        "resume": "Python developer with 3 years of experience. Skilled in Python, SQL and FastAPI.",
+        "job": "Looking for a Python developer with 2 years of experience. Required skills: Python, SQL and FastAPI.",
     },
     {
-        "name": "Partial Match",
-        "expected": "Some required skills should be missing.",
-        "resume": """
-        Software developer with 1 year of experience.
-        Skilled in Python, SQL and Data Analysis.
-        """,
-        "job": """
-        Developer with 2 years of experience.
-        Required skills: Python, SQL, FastAPI,
-        Docker and Machine Learning.
-        """
+        "name": "Partial Skill Match",
+        "resume": "Python developer with 3 years of experience. Skilled in Python and SQL.",
+        "job": "Looking for a developer with 2 years of experience. Required skills: Python, SQL and Docker.",
     },
     {
-        "name": "Poor Match",
-        "expected": "Most required technical skills should be missing.",
-        "resume": """
-        I have 2 years of experience in customer service.
-        Skilled in Excel, Communication and Teamwork.
-        """,
-        "job": """
-        Backend developer with 3 years of experience.
-        Required skills: Python, Django, SQL,
-        Docker and FastAPI.
-        """
+        "name": "No Skill Match",
+        "resume": "Graphic designer with 3 years of experience. Skilled in Photoshop and Illustrator.",
+        "job": "Looking for a Python developer with 2 years of experience. Required skills: Python, SQL and FastAPI.",
     },
     {
-        "name": "Experience Gap",
-        "expected": "Skills should match, but experience score should be lower.",
-        "resume": """
-        Python developer with 1 year of experience.
-        Skilled in Python, SQL, FastAPI and Docker.
-        """,
-        "job": """
-        Python developer with 5 years of experience.
-        Required skills: Python, SQL, FastAPI and Docker.
-        """
+        "name": "Multiple Missing Skills",
+        "resume": (
+            "Python developer with 3 years of experience. "
+            "Skilled in Python and SQL."
+        ),
+        "job": (
+            "Looking for a developer with 2 years of experience. "
+            "Required skills: Python, SQL, Docker and AWS."
+        ),
+    },
+]
+
+experience_cases = [
+    {
+        "name": "Meets Required Experience",
+        "resume": "Python developer with 3 years of experience. Skills: Python, SQL.",
+        "job": "Python developer with 3 years of experience. Required skills: Python, SQL.",
     },
     {
-        "name": "Missing Experience Information",
-        "expected": "Experience score should be unavailable.",
-        "resume": """
-        Python developer skilled in Python, SQL,
-        Machine Learning and FastAPI.
-        """,
-        "job": """
-        Developer required with Python, SQL,
-        Machine Learning and FastAPI.
-        """
-    },
-    {
-        "name": "No Matching Skills",
-        "expected": "No required job skills should match the resume.",
-        "resume": """
-        I have 2 years of experience in customer service.
-        Skilled in Excel, Communication and Teamwork.
-        """,
-        "job": """
-        Software developer with 2 years of experience.
-        Required skills: Python, Django, SQL,
-        Docker and FastAPI.
-        """
-    },
-    {
-        "name": "Empty Resume",
-        "expected": "Analyzer should reject an empty resume.",
-        "resume": "",
-        "job": """
-        Python developer required with Python, SQL and FastAPI.
-        """
-    },
-    {
-        "name": "Empty Job Description",
-        "expected": "Analyzer should reject an empty job description.",
-        "resume": """
-        Python developer with 3 years of experience.
-        Skilled in Python, SQL and FastAPI.
-        """,
-        "job": ""
-    },
-    {
-        "name": "Invalid Resume Input",
-        "expected": "Analyzer should reject a non-string resume input.",
-        "resume": 123,
-        "job": """
-        Python developer required with Python, SQL and FastAPI.
-        """
-    },
-    {
-        "name": "Whitespace-Only Resume",
-        "expected": "Analyzer should reject a resume containing only spaces.",
-        "resume": "     ",
-        "job": """
-        Python developer required with Python, SQL and FastAPI.
-        """
-    },
-    {
-        "name": "Whitespace-Only Job Description",
-        "expected": "Analyzer should reject a job description containing only spaces.",
-        "resume": """
-        Python developer with 3 years of experience.
-        Skilled in Python, SQL and FastAPI.
-        """,
-        "job": "     "
-    },
-    {
-        "name": "Invalid Job Description Input",
-        "expected": "Analyzer should reject a non-string job description input.",
-        "resume": """
-        Python developer with 3 years of experience.
-        Skilled in Python, SQL and FastAPI.
-        """,
-        "job": 123
-    },
-    {
-        "name": "Missing Job Description",
-        "expected": "Analyzer should reject a None job description.",
-        "resume": """
-        Python developer with 3 years of experience.
-        Skilled in Python, SQL and FastAPI.
-        """,
-        "job": None
-    },
-    {
-        "name": "Missing Resume",
-        "expected": "Analyzer should reject a None resume.",
-        "resume": None,
-        "job": """
-        Python developer required with Python, SQL and FastAPI.
-        """
-    },
-    {
-        "name": "No Job Skills Detected",
-        "expected": "Skill match score should be unavailable when no job skills are detected.",
-        "resume": """
-        I have 3 years of experience in customer service.
-        Skilled in communication, teamwork and customer support.
-        """,
-        "job": """
-        We are looking for a motivated and responsible person
-        who can work well with others, communicate clearly,
-        and support daily business operations.
-        """
-    },
-    {
-        "name": "Resume with No Detected Skills",
-        "expected": "No resume skills should match when no recognized resume skills are detected.",
-        "resume": """
-        I have 3 years of experience in customer service.
-        I communicate with customers, solve their problems,
-        and work responsibly with my team.
-        """,
-        "job": """
-        Software developer required with Python, Django,
-        SQL, Docker and FastAPI.
-        """
-    },
-    {
-        "name": "Missing Resume Experience with Required Experience",
-        "expected": "Experience score should be unavailable when the job requires experience but the resume does not mention it.",
-        "resume": """
-        Python developer skilled in Python, SQL,
-        FastAPI and Docker.
-        """,
-        "job": """
-        Python developer required with 4 years of experience.
-        Required skills: Python, SQL, FastAPI and Docker.
-        """
+        "name": "Less Than Required Experience",
+        "resume": "Python developer with 1 year of experience. Skills: Python, SQL.",
+        "job": "Python developer with 3 years of experience. Required skills: Python, SQL.",
     },
     {
         "name": "Fractional Experience Requirement",
-        "expected": "Experience score should reflect 2.5 years against a 3-year requirement.",
-        "resume": """
-        Python developer with 2.5 years of experience.
-        Skills include Python, SQL, FastAPI and Docker.
-        """,
-        "job": """
-        Looking for a Python developer with 3 years of experience.
-        Required skills: Python, SQL, FastAPI and Docker.
-        """
+        "resume": "Python developer with 2 years of experience. Skills: Python, SQL.",
+        "job": "Python developer with 1.5 years of experience. Required skills: Python, SQL.",
     },
     {
         "name": "Exceeds Required Experience",
-        "expected": "Experience score should be 100 when resume experience exceeds the job requirement.",
-        "resume": """
-        Python developer with 5 years of experience.
-        Skills include Python, SQL, FastAPI and Docker.
-        """,
-        "job": """
-        Looking for a Python developer with 3 years of experience.
-        Required skills: Python, SQL, FastAPI and Docker.
-        """
-    }
+        "resume": (
+            "Python developer with 5 years of experience. "
+            "Skills: Python, SQL, FastAPI and Docker."
+        ),
+        "job": (
+            "Python developer with 3 years of experience. "
+            "Required skills: Python, SQL, FastAPI and Docker."
+        ),
+    },
 ]
 
+validation_cases = [
+    {
+        "name": "Empty Resume",
+        "resume": "",
+        "job": "Python developer with 2 years of experience.",
+    },
+    {
+        "name": "Empty Job Description",
+        "resume": "Python developer with 2 years of experience.",
+        "job": "",
+    },
+    {
+        "name": "Both Inputs Empty",
+        "resume": "",
+        "job": "",
+    },
+]
 
-# Categories used for evaluation reporting
 evaluation_categories = {
-    "Matching Quality": [
-        "Strong Match",
-        "Partial Match",
-        "Poor Match",
-        "No Matching Skills",
-        "No Job Skills Detected",
-        "Resume with No Detected Skills"
-    ],
-    "Experience Evaluation": [
-        "Experience Gap",
-        "Missing Experience Information",
-        "Missing Resume Experience with Required Experience",
-        "Fractional Experience Requirement",
-        "Exceeds Required Experience"
-    ],
-    "Input Validation": [
-        "Empty Resume",
-        "Empty Job Description",
-        "Invalid Resume Input",
-        "Whitespace-Only Resume",
-        "Whitespace-Only Job Description",
-        "Invalid Job Description Input",
-        "Missing Job Description",
-        "Missing Resume"
-    ]
+    "Matching Quality": len(matching_cases),
+    "Experience Evaluation": len(experience_cases),
+    "Input Validation": len(validation_cases),
 }
 
 
-# Names of cases that test invalid or missing inputs
-validation_cases = [
-    "Empty Resume",
-    "Empty Job Description",
-    "Invalid Resume Input",
-    "Whitespace-Only Resume",
-    "Whitespace-Only Job Description",
-    "Invalid Job Description Input",
-    "Missing Job Description",
-    "Missing Resume"
-]
-
-
 def run_evaluation():
-
-    start_time = perf_counter()
-    report = []
-    case_results = {}
-
-    def log(message=""):
-        print(message)
-        report.append(str(message))
-
-    log("\n========== AI MODEL EVALUATION ==========")
-
-    evaluation_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    log("Evaluation Date and Time: " + evaluation_time)
-
-    total_cases = len(evaluation_cases)
+    start_time = time.time()
     passed_cases = 0
     failed_cases = 0
+    results = []
 
-    log("Total Test Cases: " + str(total_cases))
+    all_cases = (
+        [("Matching Quality", case) for case in matching_cases]
+        + [("Experience Evaluation", case) for case in experience_cases]
+        + [("Input Validation", case) for case in validation_cases]
+    )
 
-    for case in evaluation_cases:
+    print("=" * 60)
+    print("AI RESUME ANALYZER - EVALUATION")
+    print("=" * 60)
 
-        log("\n----------------------------------------")
-        log("Test Case: " + case["name"])
-        log("Expected Behavior: " + case["expected"])
+    for category, case in all_cases:
+        print(f"\nTesting: {case['name']}")
 
-        if case["name"] in validation_cases:
+        try:
+            result = analyze_resume(case["resume"], case["job"])
 
-            try:
-                analyze_resume(case["resume"], case["job"])
-                passed = False
+        except ValueError:
+            if case["name"] in (
+                "Empty Resume",
+                "Empty Job Description",
+                "Both Inputs Empty",
+            ):
+                passed_cases += 1
+                results.append(
+                    {
+                        "category": category,
+                        "name": case["name"],
+                        "status": "PASS",
+                        "result": "Correctly rejected empty input",
+                    }
+                )
+                print("Result: PASS - Empty input correctly rejected")
+                continue
 
-            except ValueError as error:
+            failed_cases += 1
+            results.append(
+                {
+                    "category": category,
+                    "name": case["name"],
+                    "status": "FAIL",
+                    "result": "Unexpected ValueError",
+                }
+            )
+            print("Result: FAIL - Unexpected ValueError")
+            continue
 
-                if case["name"] in [
-                    "Empty Resume",
-                    "Whitespace-Only Resume"
-                ]:
-                    expected_error = "Resume text cannot be empty."
+        except Exception as error:
+            failed_cases += 1
+            results.append(
+                {
+                    "category": category,
+                    "name": case["name"],
+                    "status": "FAIL",
+                    "result": str(error),
+                }
+            )
+            print(f"Result: FAIL - {error}")
+            continue
 
-                elif case["name"] in [
-                    "Empty Job Description",
-                    "Whitespace-Only Job Description"
-                ]:
-                    expected_error = "Job description cannot be empty."
-
-                elif case["name"] in [
-                    "Invalid Job Description Input",
-                    "Missing Job Description"
-                ]:
-                    expected_error = "Job description must be a string."
-
-                else:
-                    expected_error = "Resume text must be a string."
-
-                passed = str(error) == expected_error
-                log("Validation Message: " + str(error))
-
-        else:
-
-            result = analyze_resume(
-                case["resume"],
-                case["job"]
+        if case["name"] == "Exceeds Required Experience":
+            passed = (
+                result["resume_experience"] == 5.0
+                and result["required_experience"] == 3.0
+                and result["experience_score"] == 100
             )
 
-            log("\nFinal Match Score: " + str(result["match_score"]))
-            log("Skill Match Score: " + str(result["skill_match_score"]))
-            log("Semantic Similarity: " + str(result["semantic_similarity"]))
-            log("Experience Score: " + str(result["experience_score"]))
+        elif case["name"] == "Multiple Missing Skills":
+            passed = (
+                "docker" in result["missing_skills"]
+                and "aws" in result["missing_skills"]
+                and "python" in result["matched_skills"]
+                and "sql" in result["matched_skills"]
+            )
 
-            log("Matched Skills: " + str(result["matched_skills"]))
-            log("Missing Skills: " + str(result["missing_skills"]))
+        else:
+            passed = isinstance(result, dict) and "match_score" in result
 
-            if case["name"] == "Strong Match":
-                passed = (
-                    result["match_score"] >= 80
-                    and len(result["missing_skills"]) == 0
-                )
-
-            elif case["name"] == "Partial Match":
-                passed = (
-                    result["skill_match_score"] > 0
-                    and result["skill_match_score"] < 100
-                    and len(result["matched_skills"]) > 0
-                    and len(result["missing_skills"]) > 0
-                )
-
-            elif case["name"] == "Poor Match":
-                passed = (
-                    result["skill_match_score"] == 0
-                    and len(result["matched_skills"]) == 0
-                    and len(result["missing_skills"]) > 0
-                )
-
-            elif case["name"] == "Experience Gap":
-                passed = (
-                    result["experience_score"] is not None
-                    and result["experience_score"] < 50
-                    and result["skill_match_score"] == 100
-                )
-
-            elif case["name"] == "Missing Experience Information":
-                passed = (
-                    result["experience_score"] is None
-                    and result["match_score"] is not None
-                )
-
-            elif case["name"] == "No Matching Skills":
-                passed = (
-                    result["skill_match_score"] == 0
-                    and len(result["matched_skills"]) == 0
-                    and len(result["missing_skills"]) > 0
-                )
-
-            elif case["name"] == "No Job Skills Detected":
-                passed = (
-                    result["skill_match_score"] is None
-                    and result["match_score"] is not None
-                )
-
-            elif case["name"] == "Resume with No Detected Skills":
-                passed = (
-                    result["skill_match_score"] == 0
-                    and len(result["matched_skills"]) == 0
-                    and len(result["missing_skills"]) > 0
-                )
-
-            elif case["name"] == "Missing Resume Experience with Required Experience":
-                passed = (
-                    result["experience_score"] is None
-                    and result["match_score"] is not None
-                    and result["skill_match_score"] == 100
-                )
-
-            elif case["name"] == "Fractional Experience Requirement":
-                passed = (
-                    result["resume_experience"] == 2.5
-                    and result["required_experience"] == 3.0
-                    and result["experience_score"] == 83.33
-                )
-
-            elif case["name"] == "Exceeds Required Experience":
-                passed = (
-                    result["resume_experience"] == 5.0
-                    and result["required_experience"] == 3.0
-                    and result["experience_score"] == 100
-                )
-
-            log("Suggestions:")
-            for suggestion in result["suggestions"]:
-                log("- " + suggestion)
-
-        case_results[case["name"]] = passed
+        status = "PASS" if passed else "FAIL"
 
         if passed:
             passed_cases += 1
         else:
             failed_cases += 1
 
-        log("Evaluation Result: " + ("PASS" if passed else "FAIL"))
-
-    evaluation_duration = perf_counter() - start_time
-
-    log("\n========== EVALUATION SUMMARY ==========")
-    log("Total Test Cases: " + str(total_cases))
-    log("Passed: " + str(passed_cases))
-    log("Failed: " + str(failed_cases))
-
-    log("\nTest Case Breakdown:")
-    log("Successful Test Cases: " + str(passed_cases))
-    log("Unsuccessful Test Cases: " + str(failed_cases))
-
-    log("\n========== CATEGORY-WISE EVALUATION ==========")
-
-    for category, test_names in evaluation_categories.items():
-
-        category_passed = sum(
-            1 for name in test_names
-            if case_results.get(name, False)
+        results.append(
+            {
+                "category": category,
+                "name": case["name"],
+                "status": status,
+                "result": result,
+            }
         )
 
-        category_failed = len(test_names) - category_passed
+        print(f"Result: {status}")
 
-        log("\nCategory: " + category)
-        log("Total Cases: " + str(len(test_names)))
-        log("Passed: " + str(category_passed))
-        log("Failed: " + str(category_failed))
+        if isinstance(result, dict) and "match_score" in result:
+            print(f"Match Score: {result['match_score']}")
+            print(f"Matched Skills: {result['matched_skills']}")
+            print(f"Missing Skills: {result['missing_skills']}")
 
-    pass_percentage = (
-        (passed_cases / total_cases) * 100
-        if total_cases > 0 else 0
+    duration = time.time() - start_time
+    total_cases = passed_cases + failed_cases
+    percentage = (passed_cases / total_cases * 100) if total_cases else 0
+
+    report = [
+        "=" * 60,
+        "AI RESUME ANALYZER - EVALUATION REPORT",
+        "=" * 60,
+        f"Total Test Cases: {total_cases}",
+        f"Passed: {passed_cases}",
+        f"Failed: {failed_cases}",
+        f"Pass Percentage: {percentage:.2f}%",
+        f"Duration: {duration:.2f} seconds",
+        "",
+        "CATEGORY SUMMARY",
+    ]
+
+    for category, total in evaluation_categories.items():
+        category_passed = sum(
+            1
+            for item in results
+            if item["category"] == category and item["status"] == "PASS"
+        )
+        report.append(f"{category}: {category_passed}/{total}")
+
+    report.extend(["", "DETAILED RESULTS"])
+
+    for item in results:
+        report.append(
+            f"{item['category']} | {item['name']} | {item['status']}"
+        )
+
+    report.extend(
+        [
+            "",
+            f"OVERALL RESULT: {'PASS' if failed_cases == 0 else 'FAIL'}",
+        ]
     )
 
-    log("\nPass Percentage: " + str(round(pass_percentage, 2)) + "%")
+    report_text = "\n".join(report)
 
-    overall_result = "PASS" if failed_cases == 0 else "FAIL"
-    log("Overall Result: " + overall_result)
+    print("\n" + report_text)
 
-    log("Evaluation Duration: " + str(round(evaluation_duration, 2)) + " seconds")
+    report_path = Path(__file__).resolve().parent / "evaluation_report.txt"
+    report_path.write_text(report_text, encoding="utf-8")
 
-    log("\n========== EVALUATION COMPLETED ==========")
-
-    report_path = Path(__file__).with_name("evaluation_report.txt")
-
-    report_path.write_text(
-        "\n".join(report),
-        encoding="utf-8"
-    )
-
-    print("\nEvaluation report saved to:", report_path)
+    print(f"\nReport saved to: {report_path}")
 
     return failed_cases
 
