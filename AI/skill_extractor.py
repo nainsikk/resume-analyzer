@@ -70,8 +70,13 @@ def extract_skills(text):
 
 def extract_experience(text):
     """
-    Extract the highest explicitly stated number of years
-    of experience from text.
+    Extract explicitly stated experience duration.
+
+    Converts months into decimal years.
+    Examples:
+        6 months -> 0.5
+        12 months -> 1.0
+        1 year and 6 months -> 1.5
 
     Returns:
         Number of years, or None if no experience is found.
@@ -79,22 +84,43 @@ def extract_experience(text):
     if not isinstance(text, str):
         return None
 
-    patterns = [
+    matches = []
+
+    # Extract year-based experience.
+    year_patterns = [
         r"(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)\s*(?:(?:of\s+)?(?:relevant\s+)?|working\s+)?experience",
         r"(?:worked|working)\s+for\s+(\d+(?:\.\d+)?)\s*\+?\s*(?:years?|yrs?)",
     ]
 
-    matches = []
+    for pattern in year_patterns:
+        matches.extend(
+            float(value)
+            for value in re.findall(pattern, text, re.IGNORECASE)
+        )
 
-    for pattern in patterns:
-        matches.extend(re.findall(pattern, text, re.IGNORECASE))
+    # Extract combined durations such as 1 year and 6 months.
+    combined_pattern = (
+        r"(\d+(?:\.\d+)?)\s*years?\s*(?:and\s+)?"
+        r"(\d+(?:\.\d+)?)\s*months?"
+    )
+
+    for match in re.finditer(combined_pattern, text, re.IGNORECASE):
+        years = float(match.group(1))
+        months = float(match.group(2))
+        matches.append(years + months / 12)
+
+    # Extract standalone month durations.
+    month_pattern = (
+        r"(\d+(?:\.\d+)?)\s*months?\s*(?:of\s+)?experience"
+    )
+
+    for match in re.finditer(month_pattern, text, re.IGNORECASE):
+        matches.append(float(match.group(1)) / 12)
 
     if not matches:
         return None
 
-    years = [float(value) for value in matches]
-
-    return max(years)
+    return max(matches)
 
 
 # Test the extractor
