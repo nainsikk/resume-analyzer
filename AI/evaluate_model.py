@@ -66,6 +66,17 @@ experience_cases = [
             "Required skills: Python, SQL, FastAPI and Docker."
         ),
     },
+    {
+        "name": "Six Months of Experience",
+        "resume": (
+            "Python developer with 6 months of experience. "
+            "Skills: Python and SQL."
+        ),
+        "job": (
+            "Python developer with 1 year of experience. "
+            "Required skills: Python and SQL."
+        ),
+    },
 ]
 
 validation_cases = [
@@ -171,6 +182,12 @@ def run_evaluation():
                 and "aws" in result["missing_skills"]
                 and "python" in result["matched_skills"]
                 and "sql" in result["matched_skills"]
+            )
+
+        elif case["name"] == "Six Months of Experience":
+            passed = (
+                result["resume_experience"] == 0.5
+                and result["required_experience"] == 1.0
             )
 
         else:
